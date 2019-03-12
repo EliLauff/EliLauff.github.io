@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-03-12T09:05:42-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Eli’s Technical Blog</title><subtitle>My name is Eli.  I am a petroleum engineer by background. With help, I have discovered a desire for learning and implementing code using Ruby and Javascript. I care about logical integrity and using one's abilities in a practical and helpful manner.  I am a student at Flatiron School in Houston, TX.</subtitle><entry><title type="html">wrap_word: A Simple Ruby Method for Formatting CLI Output in Terminal</title><link href="http://localhost:4000/jekyll/update/2019/03/11/wrap_word-a-simple-method-to-format-ruby-terminal-outputs.html" rel="alternate" type="text/html" title="wrap_word: A Simple Ruby Method for Formatting CLI Output in Terminal" /><published>2019-03-11T16:24:59-05:00</published><updated>2019-03-11T16:24:59-05:00</updated><id>http://localhost:4000/jekyll/update/2019/03/11/wrap_word-a-simple-method-to-format-ruby-terminal-outputs</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2019/03/11/wrap_word-a-simple-method-to-format-ruby-terminal-outputs.html">&lt;h1 id=&quot;the-problem&quot;&gt;The Problem:&lt;/h1&gt;
+
+&lt;p&gt;Last week I was working on a project &lt;a href=&quot;https://github.com/EliLauff/b_corporation_searchable_database&quot;&gt;(found here for those interested)&lt;/a&gt; that is designed to demonstrate the use of ActiveRecord in modeling Many to Many relationships in Ruby. A main feature of my end product is an info page output in terminal that allows users to get a brief summary of a company that meets their search parameters. Before implementing a formatting method, this was the output in OSX terminal:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/photos/Before_Photo.png&quot; alt=&quot;Ew. Gross.&quot; /&gt;
+&lt;em&gt;*Almost* literally unreadable.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously, I wasn’t happy that one of my main features had “business” being truncated into “busine” and “ss”. After a brief foray into Google, I decided to create a simple method of my own to force clean word wrapping in long strings. Because my project handled long-form input strings from a database with 5000+ entries, I couldn’t manually edit each string. I needed a one-size-fits-all solution.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-solution&quot;&gt;The Solution:&lt;/h1&gt;
+
+&lt;p&gt;My improvised solution took form in a method I call &lt;code class=&quot;highlighter-rouge&quot;&gt;wrap_word&lt;/code&gt;. The goal of &lt;code class=&quot;highlighter-rouge&quot;&gt;wrap_word&lt;/code&gt; is to take in a string and return it with carriage returns added at a predetermined given width. The carriage returns will only be added in between complete words and will take into account if the input string has carriage returns present already.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wrap_word&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;given_width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;array_of_characters&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;output_string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;counter_variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;array_of_characters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;character&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#first check if the original character is a carriage return.&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#If so, reset the counter variable.&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;character&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;counter_variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;#if not, check if the counter variable is greater than the desired width,&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#also checking if the current character from the given string is a space.&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#if so, replace it with a carriage return.&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;elsif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;counter_variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;given_width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;character&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;character&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;counter_variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;output_string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;character&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;counter_variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;output_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The default value for &lt;code class=&quot;highlighter-rouge&quot;&gt;given_width&lt;/code&gt; will change depending on the size of text you’re using in Terminal as well as the resolution of your display. A simple trick for finding the default value for &lt;code class=&quot;highlighter-rouge&quot;&gt;given_width&lt;/code&gt; follows:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Copy a string the width of your terminal window:
+&lt;img src=&quot;/photos/Copy_str.png&quot; alt=&quot;Copy String&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Enter irb and run str.length on the string:
+&lt;img src=&quot;/photos/Str_length.png&quot; alt=&quot;str.length&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Subtract about 15% from the value to allow for margins, and you have your default value! In my example, the total width was 119 characters (my terminal was greatly magnified!) and I ended up using a value of 105 for my default value. Use yours in the method definition.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&quot;the-result&quot;&gt;The Result:&lt;/h1&gt;
+
+&lt;p&gt;I used this code to replace any longform string that would be output to my terminal. Whenever using &lt;code class=&quot;highlighter-rouge&quot;&gt;puts [string]&lt;/code&gt; on a long string, the new syntax would be &lt;code class=&quot;highlighter-rouge&quot;&gt;puts wrap_word([string])&lt;/code&gt;. Referring to the prior example of my project, the company descriptions output by &lt;code class=&quot;highlighter-rouge&quot;&gt;wrap_word&lt;/code&gt; fit nicely on my terminal window:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/photos/after_photo.png&quot; alt=&quot;After Photo&quot; /&gt;
+&lt;em&gt;Clean and simple!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;This code could be improved upon by finding a more simple or automatic solution to the default value for &lt;code class=&quot;highlighter-rouge&quot;&gt;given_width&lt;/code&gt;. Feel free to copy this code and improve upon it! After creating &lt;code class=&quot;highlighter-rouge&quot;&gt;wrap_word&lt;/code&gt; I found that someone had created a ruby gem that seems to tackle the same problem from a different approach. Take a look at it &lt;a href=&quot;https://github.com/pazdera/word_wrap&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">The Problem:</summary></entry><entry><title type="html">My First Post in Jekyll</title><link href="http://localhost:4000/jekyll/update/2019/03/11/welcome-to-jekyll.html" rel="alternate" type="text/html" title="My First Post in Jekyll" /><published>2019-03-11T14:13:59-05:00</published><updated>2019-03-11T14:13:59-05:00</updated><id>http://localhost:4000/jekyll/update/2019/03/11/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2019/03/11/welcome-to-jekyll.html">&lt;p&gt;Hello World!&lt;/p&gt;
+
+&lt;!-- You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+
+To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+
+Jekyll also offers powerful support for code snippets: --&gt;
+
+&lt;!-- 
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+
+Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+
+[jekyll-docs]: https://jekyllrb.com/docs/home
+[jekyll-gh]: https://github.com/jekyll/jekyll
+[jekyll-talk]: https://talk.jekyllrb.com/ --&gt;</content><author><name></name></author><summary type="html">Hello World!</summary></entry></feed>
